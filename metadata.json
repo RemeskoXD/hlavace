@@ -1,0 +1,5 @@
+{
+  "name": "Lumina Dashboard",
+  "description": "A high-end, designer-quality personal dashboard featuring real-time weather, focus management, and daily inspiration.",
+  "requestFramePermissions": ["geolocation"]
+}
