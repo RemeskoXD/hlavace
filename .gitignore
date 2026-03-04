@@ -1,7 +1,8 @@
+.env
+*.db
+uploads/
+backups/
 node_modules/
-.next/
-coverage/
-.DS_Store
 *.log
-.env*
-!.env.example
+.DS_Store
+Thumbs.db

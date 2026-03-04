@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Hlaváček - Admin Panel</title>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #E6C200;
+            --dark: #1a1a1a;
+            --gray: #6c757d;
+            --light-gray: #f8f9fa;
+            --border: #dee2e6;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--dark);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        /* Admin Panel */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: var(--dark);
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            margin: -2rem -2rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: var(--dark);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card h3 {
+            color: var(--gray);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--light-gray);
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .table tr:hover {
+            background: var(--light-gray);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .actions select {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .actions select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* User dropdown in header */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .user-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .user-btn i {
+            color: var(--primary);
+        }
+
+        .user-btn:hover i {
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .view-site-btn {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-site-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: none;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <h1><i class="fas fa-car" style="color: var(--primary);"></i> Auto Hlaváček</h1>
+            <h2 style="text-align: center; color: var(--gray); font-size: 1rem; margin-bottom: 2rem;">Admin Panel</h2>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Uživatelské jméno</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Heslo</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-container" id="adminPanel">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Auto Hlaváček</h3>
+                <small>Admin Panel</small>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" data-section="dashboard" class="active"><i class="fas fa-chart-bar"></i> Dashboard</a>
+                <a href="#" data-section="cars"><i class="fas fa-car"></i> Vozidla</a>
+                <a href="#" data-section="rental"><i class="fas fa-key"></i> Půjčovna</a>
+                <a href="#" data-section="inquiries"><i class="fas fa-envelope"></i> Poptávky</a>
+                <a href="#" data-section="settings"><i class="fas fa-cog"></i> Nastavení</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Odhlásit se</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2 id="pageTitle">Dashboard</h2>
+                <div class="header-actions">
+                    <button class="user-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                    </button>
+                    <button class="view-site-btn" id="viewSite">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Zobrazit web</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section class="section active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-left: 4px solid var(--info);">
+                        <h3>Návštěvy (Celkem)</h3>
+                        <div class="value" id="visitorStatsValue">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Celkem vozidel</h3>
+                        <div class="value" id="totalCars">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Aktivních vozidel</h3>
+                        <div class="value" id="activeCars">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Nové poptávky</h3>
+                        <div class="value" id="newInquiries">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Celkem poptávek</h3>
+                        <div class="value" id="totalInquiries">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Podrobné statistiky návštěvnosti</h3>
+                    </div>
+                    <div class="stats-grid"
+                        style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem;">
+                        <div class="stat-item"
+                            style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.5rem;">Dnes</div>
+                            <div class="value" id="statsToday"
+                                style="font-size: 1.5rem; font-weight: bold; color: var(--primary-dark);">0</div>
+                        </div>
+                        <div class="stat-item"
+                            style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.5rem;">Tento týden</div>
+                            <div class="value" id="statsWeek"
+                                style="font-size: 1.5rem; font-weight: bold; color: var(--info);">0</div>
+                        </div>
+                        <div class="stat-item"
+                            style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.5rem;">Tento měsíc</div>
+                            <div class="value" id="statsMonth"
+                                style="font-size: 1.5rem; font-weight: bold; color: var(--success);">0</div>
+                        </div>
+                        <div class="stat-item"
+                            style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.5rem;">Celkem</div>
+                            <div class="value" id="statsTotal" style="font-size: 1.5rem; font-weight: bold;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Nejnovější poptávky</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Jméno</th>
+                                <th>Email</th>
+                                <th>Typ</th>
+                                <th>Vozidlo</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentInquiriesTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Načítám...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Cars Section -->
+            <section class="section" id="cars">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Správa vozidel</h3>
+                        <button class="btn btn-success" id="addCarBtn"><i class="fas fa-plus-circle"></i> Přidat
+                            vozidlo</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Název / Pořadí</th>
+                                <th>Značka</th>
+                                <th>Rok</th>
+                                <th>Cena</th>
+                                <th>Status</th>
+                                <th>Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carsTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center;">Načítám...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Rental Section -->
+            <section class="section" id="rental">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Půjčovna vozidel</h3>
+                        <button class="btn btn-success" id="addRentalBtn"><i class="fas fa-plus-circle"></i> Přidat
+                            vozidlo</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vozidlo / Pořadí</th>
+                                <th>Cena/den</th>
+                                <th>Status</th>
+                                <th>Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rentalCarsTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Načítám...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Inquiries Section -->
+            <section class="section" id="inquiries">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Poptávky</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Typ</th>
+                                <th>Jméno</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                                <th>Vozidlo</th>
+                                <th>Zpráva</th>
+                                <th>Status</th>
+                                <th>Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiriesTable">
+                            <tr>
+                                <td colspan="9" style="text-align: center;">Načítám...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="section" id="settings">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Nastavení webu</h3>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <form id="settingsForm" style="max-width: 600px;">
+                            <h4 style="margin-bottom: 1.5rem; color: var(--primary-dark);">Kontaktní údaje</h4>
+
+                            <div class="form-group">
+                                <label for="companyName">Název firmy</label>
+                                <input type="text" id="companyName" name="company_name" value="Auto Hlaváček" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ownerName">Majitel firmy</label>
+                                <input type="text" id="ownerName" name="owner_name" value="Ing. Tomáš Hlaváček">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="companyIco">IČO</label>
+                                <input type="text" id="companyIco" name="ico" placeholder="12345678">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="companyDic">DIČ</label>
+                                <input type="text" id="companyDic" name="dic" placeholder="CZ12345678">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" id="email" name="email" value="auto-hlavacek@seznam.cz" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Telefon</label>
+                                <input type="tel" id="phone" name="phone" value="+420 602 763 556" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Adresa</label>
+                                <input type="text" id="address" name="address" value="Polská 402, 793 76 Zlaté Hory"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="openingHours">Otevírací doba (plná verze)</label>
+                                <textarea id="openingHours" name="opening_hours" rows="3">ÚT-PÁ: 9:00 - 12:00, 13:00 - 16:00
+Mimo otevírací dobu pouze po telefonické dohodě</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="openingHoursShort">Otevírací doba (krátká verze pro horní lištu)</label>
+                                <input type="text" id="openingHoursShort" name="opening_hours_short"
+                                    value="ÚT-PÁ: 9:00-12:00, 13:00-16:00" placeholder="např. ÚT-PÁ: 9:00-16:00">
+                            </div>
+
+                            <h4 style="margin: 2rem 0 1.5rem; color: var(--primary-dark);">Sociální sítě</h4>
+
+                            <div class="form-group">
+                                <label for="facebook">Facebook URL</label>
+                                <input type="url" id="facebook" name="facebook"
+                                    value="https://www.facebook.com/IngTomasHlavacek">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="instagram">Instagram URL</label>
+                                <input type="url" id="instagram" name="instagram"
+                                    placeholder="https://www.instagram.com/vase-firma">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="whatsapp">WhatsApp číslo</label>
+                                <input type="tel" id="whatsapp" name="whatsapp" value="420602763556">
+                            </div>
+
+                            <h4 style="margin: 2rem 0 1.5rem; color: var(--primary-dark);">Změna hesla</h4>
+
+                            <div class="form-group">
+                                <label for="currentPassword">Současné heslo</label>
+                                <input type="password" id="currentPassword" name="current_password"
+                                    autocomplete="current-password">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPassword">Nové heslo (min. 8 znaků)</label>
+                                <input type="password" id="newPassword" name="new_password" autocomplete="new-password">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Potvrzení nového hesla</label>
+                                <input type="password" id="confirmPassword" name="confirm_password"
+                                    autocomplete="new-password">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn"
+                                style="margin-bottom: 2rem;">
+                                <i class="fas fa-key"></i> Změnit heslo
+                            </button>
+
+                            <h4 style="margin: 2rem 0 1.5rem; color: var(--primary-dark);">Upozornění na webu</h4>
+
+                            <div class="form-group">
+                                <label for="announcement">Text upozornění (zobrazí se jako popup)</label>
+                                <textarea id="announcement" name="announcement" rows="3"
+                                    placeholder="Např.: Dovolená 1.7. - 15.7.2024"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="announcementEnabled" name="announcement_enabled">
+                                    <span style="margin-left: 0.5rem;">Zobrazit upozornění na webu</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                                <i class="fas fa-save"></i> Uložit nastavení
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Rental Car Modal -->
+    <div class="modal" id="rentalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="rentalModalTitle">Přidat vozidlo do půjčovny</h3>
+                <button class="close-btn" onclick="closeRentalModal()">&times;</button>
+            </div>
+            <form id="rentalForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="rentalVehicle">Název vozidla</label>
+                        <input type="text" id="rentalVehicle" name="vehicle" placeholder="např. Škoda Octavia Combi"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentalPrice">Cena za den (Kč)</label>
+                        <input type="number" id="rentalPrice" name="price_per_day" placeholder="např. 1500" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentalDescription">Popis / Ceník</label>
+                        <textarea id="rentalDescription" name="description" rows="6" placeholder="Např.:
+1 den: 1 500 Kč
+2-3 dny: 1 300 Kč/den
+4-7 dní: 1 100 Kč/den
+Týden a více: 900 Kč/den
+
+Zajistíme vozy i dlouhodobě."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentalImages">Fotky vozidla (max 10 obrázků)</label>
+                        <input type="file" id="rentalImages" name="images" accept="image/*" multiple>
+                        <div id="rentalImagesPreview" class="image-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentalStatus">Status</label>
+                        <select id="rentalStatus" name="status">
+                            <option value="active">Aktivní</option>
+                            <option value="inactive">Neaktivní</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeRentalModal()">Zrušit</button>
+                    <button type="submit" class="btn btn-success">Uložit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Car Modal -->
+    <div class="modal" id="carModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Přidat vozidlo</h3>
+                <button class="close-btn" onclick="closeCarModal()">&times;</button>
+            </div>
+            <form id="carForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="carTitle">Název vozidla</label>
+                        <input type="text" id="carTitle" name="title" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="carBrand">Značka</label>
+                            <select id="carBrand" name="brand" required>
+                                <option value="">Vyberte značku</option>
+                                <option value="Acura">Acura</option>
+                                <option value="Alfa Romeo">Alfa Romeo</option>
+                                <option value="Aston Martin">Aston Martin</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Bentley">Bentley</option>
+                                <option value="BMW">BMW</option>
+                                <option value="Bugatti">Bugatti</option>
+                                <option value="Buick">Buick</option>
+                                <option value="Cadillac">Cadillac</option>
+                                <option value="Chevrolet">Chevrolet</option>
+                                <option value="Chrysler">Chrysler</option>
+                                <option value="Citroën">Citroën</option>
+                                <option value="Dacia">Dacia</option>
+                                <option value="Daewoo">Daewoo</option>
+                                <option value="Daihatsu">Daihatsu</option>
+                                <option value="Dodge">Dodge</option>
+                                <option value="DS">DS</option>
+                                <option value="Ferrari">Ferrari</option>
+                                <option value="Fiat">Fiat</option>
+                                <option value="Ford">Ford</option>
+                                <option value="Genesis">Genesis</option>
+                                <option value="GMC">GMC</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Hummer">Hummer</option>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Infiniti">Infiniti</option>
+                                <option value="Isuzu">Isuzu</option>
+                                <option value="Iveco">Iveco</option>
+                                <option value="Jaguar">Jaguar</option>
+                                <option value="Jeep">Jeep</option>
+                                <option value="Kia">Kia</option>
+                                <option value="Lada">Lada</option>
+                                <option value="Lamborghini">Lamborghini</option>
+                                <option value="Lancia">Lancia</option>
+                                <option value="Land Rover">Land Rover</option>
+                                <option value="Lexus">Lexus</option>
+                                <option value="Lincoln">Lincoln</option>
+                                <option value="Lotus">Lotus</option>
+                                <option value="Maserati">Maserati</option>
+                                <option value="Maybach">Maybach</option>
+                                <option value="Mazda">Mazda</option>
+                                <option value="McLaren">McLaren</option>
+                                <option value="Mercedes-Benz">Mercedes-Benz</option>
+                                <option value="MG">MG</option>
+                                <option value="Mini">Mini</option>
+                                <option value="Mitsubishi">Mitsubishi</option>
+                                <option value="Nissan">Nissan</option>
+                                <option value="Opel">Opel</option>
+                                <option value="Peugeot">Peugeot</option>
+                                <option value="Polestar">Polestar</option>
+                                <option value="Pontiac">Pontiac</option>
+                                <option value="Porsche">Porsche</option>
+                                <option value="RAM">RAM</option>
+                                <option value="Renault">Renault</option>
+                                <option value="Rolls-Royce">Rolls-Royce</option>
+                                <option value="Rover">Rover</option>
+                                <option value="Saab">Saab</option>
+                                <option value="Seat">Seat</option>
+                                <option value="Škoda">Škoda</option>
+                                <option value="Smart">Smart</option>
+                                <option value="SsangYong">SsangYong</option>
+                                <option value="Subaru">Subaru</option>
+                                <option value="Suzuki">Suzuki</option>
+                                <option value="Tata">Tata</option>
+                                <option value="Tesla">Tesla</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Volkswagen">Volkswagen</option>
+                                <option value="Volvo">Volvo</option>
+                                <option value="Jiné">Jiné</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="carModel">Model</label>
+                            <input type="text" id="carModel" name="model">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="carYear">Rok výroby</label>
+                            <input type="number" id="carYear" name="year" min="1900" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="carPrice">Cena (Kč)</label>
+                            <input type="number" id="carPrice" name="price" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="carMileage">Najeto (km)</label>
+                            <input type="number" id="carMileage" name="mileage">
+                        </div>
+                        <div class="form-group">
+                            <label for="carFuel">Palivo</label>
+                            <select id="carFuel" name="fuel">
+                                <option value="">Vyberte palivo</option>
+                                <option value="benzin">Benzín</option>
+                                <option value="diesel">Diesel</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="elektro">Elektro</option>
+                                <option value="lpg">LPG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="carTransmission">Převodovka</label>
+                            <select id="carTransmission" name="transmission">
+                                <option value="">Vyberte převodovku</option>
+                                <option value="manual">Manuál</option>
+                                <option value="automatic">Automat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="carPower">Výkon (kW)</label>
+                            <input type="text" id="carPower" name="power" placeholder="např. 110">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="carDescription">Popis</label>
+                        <textarea id="carDescription" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="carMainImage">Hlavní obrázek</label>
+                        <input type="file" id="carMainImage" name="main_image" accept="image/*">
+                        <div id="mainImagePreview" class="image-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="carGallery">Galerie (max 20 obrázků)</label>
+                        <input type="file" id="carGallery" name="gallery" accept="image/*" multiple>
+                        <div id="galleryPreview" class="image-preview"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="carStatus">Status</label>
+                            <select id="carStatus" name="status">
+                                <option value="active">Aktivní</option>
+                                <option value="inactive">Neaktivní</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; margin-top: 2rem;">
+                                <input type="checkbox" id="carFeatured" name="featured">
+                                <span style="margin-left: 0.5rem;">Doporučené vozidlo</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCarModal()">Zrušit</button>
+                    <button type="submit" class="btn btn-success">Uložit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div class="toast" id="toast">
+        <div id="toastMessage">Uloženo!</div>
+    </div>
+
+    <!-- Modal System -->
+    <script src="js/modal-system.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

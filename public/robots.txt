@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://auto-hlavacek.cz/sitemap.xml
