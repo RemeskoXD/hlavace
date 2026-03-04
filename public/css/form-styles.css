@@ -1,0 +1,25 @@
+/* Form Input Styles */
+.form-input:focus {
+    transform: scale(1.02);
+    border-color: #FFD700 !important;
+}
+
+.form-input {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.form-input:not(:focus) {
+    transform: scale(1);
+    border-color: #dee2e6;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.submit-btn:not(:hover) {
+    transform: translateY(0);
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+}
